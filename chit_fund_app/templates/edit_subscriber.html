@@ -1,0 +1,153 @@
+<html>
+  <head>
+    <title>Chit Fund Dashboard-edit_subscriber</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7fc;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100vh;
+        color: #333;
+      }
+
+      header {
+        width: 100%;
+        background-color: #4a4aff;
+        padding: 10px 20px;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: left;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Navigation Links */
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-links li {
+        display: inline;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: normal;
+      }
+
+      .nav-links a:hover {
+        text-decoration: underline;
+      }
+
+      h2 {
+        margin-top: 20px;
+        color: #4a4aff;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .form-container {
+        width: 50%;
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .form-container input,
+      .form-container textarea,
+      .form-container select {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      .form-container input:focus,
+      .form-container textarea:focus,
+      .form-container select:focus {
+        border-color: #4a4aff;
+        outline: none;
+      }
+
+      .form-container button {
+        width: 100%;
+        padding: 15px;
+        background-color: #4a4aff;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .form-container button:hover {
+        background-color: #3a3ac3;
+      }
+
+      label {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>SAS</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+    <h2>Edit Subscriber</h2>
+    <div class="form-container">
+      <form method="post">
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" value="{{ subscriber.name }}" required />
+
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" id="phone" value="{{ subscriber.phone }}" required />
+
+        <label for="address">Address:</label>
+        <textarea name="address" id="address" required>{{ subscriber.address }}</textarea>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" value="{{ subscriber.email }}" required />
+
+        <label for="group_name">Group Name:</label>
+        <select name="group_name" id="group_name" required>
+          {% for group in chit_groups %}
+            <option value="{{ group.id }}" {% if group.id == subscriber.group_name.id %}selected{% endif %}>
+              {{ group.group_name }}
+            </option>
+          {% endfor %}
+        </select>
+
+        <label for="ticket_number">Ticket Number:</label>
+        <input type="text" name="ticket_number" id="ticket_number" value="{{ subscriber.ticket_number }}" required />
+
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  </body>
+</html>

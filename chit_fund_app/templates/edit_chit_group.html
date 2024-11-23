@@ -1,0 +1,216 @@
+<html>
+  <head>
+    <title>Chit Fund Dashboard - Edit Chit Group</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background-color: #f4f7fc;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100vh;
+        color: #333;
+      }
+
+      header {
+        width: 100%;
+        background-color: #4a4aff;
+        padding: 15px 20px;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: left;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Navigation Links */
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-links li {
+        display: inline;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .nav-links a:hover {
+        text-decoration: underline;
+      }
+
+      h2 {
+        margin-top: 30px;
+        color: #4a4aff;
+        font-size: 26px;
+        font-weight: bold;
+      }
+
+      .form-container {
+        width: 50%;
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        text-align: left;
+        box-sizing: border-box;
+      }
+
+      .form-container input,
+      .form-container select,
+      .form-container button {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      .form-container input:focus,
+      .form-container select:focus,
+      .form-container button:focus {
+        border-color: #4a4aff;
+        outline: none;
+      }
+
+      .form-container button {
+        background-color: #4a4aff;
+        color: white;
+        font-size: 18px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .form-container button:hover {
+        background-color: #3a3ac3;
+      }
+
+      label {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+    <script>
+      // Function to format numbers with commas
+      function formatWithCommas(value) {
+        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      // Function to remove commas
+      function removeCommas(value) {
+        return value.replace(/,/g, "");
+      }
+
+      // Update Installment Amount dynamically
+      function updateInstallment() {
+        const totalAmountInput = document.getElementById("total_amount");
+        const monthsInput = document.getElementById("months");
+        const installmentAmountInput =
+          document.getElementById("installment_amount");
+
+        // Remove commas and parse as number
+        const totalAmount = parseFloat(removeCommas(totalAmountInput.value));
+        const months = parseInt(monthsInput.value);
+
+        // Calculate installment amount if both inputs are valid
+        if (!isNaN(totalAmount) && !isNaN(months) && months > 0) {
+          const installmentAmount = (totalAmount / months).toFixed(2);
+          installmentAmountInput.value = installmentAmount;
+        }
+      }
+
+      // Handle input for Total Amount to accept commas
+      function handleTotalAmountInput(event) {
+        const input = event.target;
+        const value = input.value;
+
+        // Remove any non-numeric characters (except for commas)
+        const sanitizedValue = value.replace(/[^0-9,]/g, "");
+
+        // Format the value with commas
+        input.value = formatWithCommas(removeCommas(sanitizedValue));
+
+        // Update Installment Amount
+        updateInstallment();
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <div>SAS</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+    <h2>Edit Chit Group</h2>
+    <div class="form-container">
+      <form method="post">
+        {% csrf_token %}
+        <label for="group_name">Group Name:</label>
+        <input
+          type="text"
+          name="group_name"
+          id="group_name"
+          value="{{ chit_group.group_name }}"
+          required
+        /><br />
+
+        <label for="total_amount">Total Amount:</label>
+        <input
+          type="text"
+          name="total_amount"
+          id="total_amount"
+          value="{{ chit_group.total_amount|floatformat:2 }}"
+          oninput="handleTotalAmountInput(event)"
+          required
+        /><br />
+
+        <label for="months">Months:</label>
+        <input
+          type="number"
+          name="months"
+          id="months"
+          value="{{ chit_group.months }}"
+          oninput="updateInstallment()"
+          required
+        /><br />
+
+        <label for="installment_amount">Installment Amount:</label>
+        <input
+          type="text"
+          name="installment_amount"
+          id="installment_amount"
+          value="{{ chit_group.installment_amount|floatformat:2 }}"
+          readonly
+        /><br />
+
+        <label for="members_count">Members Count:</label>
+        <input
+          type="number"
+          name="members_count"
+          id="members_count"
+          value="{{ chit_group.members_count }}"
+          required
+        /><br />
+
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  </body>
+</html>

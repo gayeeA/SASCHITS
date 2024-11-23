@@ -1,0 +1,188 @@
+<html>
+  <head>
+    <title>Chit Fund Dashboard - Subscribers</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        color: #333333;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        height: 100vh;
+        line-height: 1.6;
+      }
+
+      header {
+        width: 98%;
+        background-color: #0066cc;
+        color: white;
+        padding: 5px 15px; /* Reduced height */
+        font-size: 1.8rem;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-links li {
+        display: inline;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 1.5rem;
+      }
+
+      .nav-links a:hover {
+        text-decoration: underline;
+      }
+
+      h2 {
+        font-size: 2.4rem;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .buttons a {
+        text-decoration: none;
+        padding: 12px 20px;
+        margin: 10px;
+        background-color: #008cba;
+        color: white;
+        font-size: 1.8rem;
+        text-align: center;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .buttons a:hover {
+        background-color: #005f8a;
+        transform: translateY(-2px);
+      }
+
+      table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        text-align: center;
+        padding: 15px;
+        border: 1px solid #ddd;
+        font-size: 1.6rem;
+      }
+
+      th {
+        background-color: #004080;
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      button {
+        font-size: 1.4rem;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .edit-button {
+        background-color: #007bff; /* Blue color */
+        color: white;
+        margin-right: 15px; /* Increased space between buttons */
+      }
+
+      .edit-button:hover {
+        background-color: #0056b3;
+      }
+
+      .delete-button {
+        background-color: #ff4d4d; /* Red color for Delete */
+        color: white;
+      }
+
+      .delete-button:hover {
+        background-color: #cc0000;
+      }
+
+      form {
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>SAS</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+    <h2>Subscribers</h2>
+    <div class="buttons">
+      <a href="/subscribers/add/">Add Subscriber</a>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>TICKET NUMBER</th>
+          <th>Group Name</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subscribers %}
+        <tr>
+          <td>{{ sub.ticket_number }}</td>
+          <td>{{ sub.group_name.group_name }}</td>
+          <td>{{ sub.name }}</td>
+          <td>{{ sub.phone }}</td>
+          <td>
+            <button
+              class="edit-button"
+              onclick="window.location.href='/subscribers/edit/{{ sub.id }}'"
+            >
+              Edit
+            </button>
+            <form action="{% url 'delete_subscriber' sub.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="delete-button">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

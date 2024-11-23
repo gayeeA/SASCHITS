@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chit Fund Dashboard - Add Payment</title>
+    <style>
+      /* Reset default margin and padding */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Body Styling */
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: flex-start;
+      }
+
+      /* Header Styling */
+      header {
+        width: 100%;
+        background-color: #4a4aff;
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      header .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      header .nav-links li {
+        display: inline;
+      }
+
+      header .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: normal;
+        transition: all 0.3s ease;
+      }
+
+      header .nav-links a:hover {
+        text-decoration: underline;
+      }
+
+      /* Main Content */
+      main {
+        flex: 1;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        width: 80%;
+        max-width: 1200px;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      label {
+        font-size: 14px;
+        color: #555;
+      }
+
+      select,
+      input[type="text"],
+      input[type="date"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        transition: border 0.3s ease;
+      }
+
+      select:focus,
+      input[type="text"]:focus,
+      input[type="date"]:focus {
+        border-color: #4a4aff;
+      }
+
+      button {
+        padding: 12px 20px;
+        background-color: #4a4aff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #3b3ae0;
+      }
+
+      .payment-list {
+        margin-top: 40px;
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .card p {
+        font-size: 16px;
+        margin: 0;
+        color: #555;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        main {
+          width: 100%;
+          padding: 20px;
+        }
+
+        .nav-links {
+          gap: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>SAS</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'list_payments' %}">Payments</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Add Payment</h2>
+      <form method="POST">
+        {% csrf_token %}
+        <!-- Existing fields -->
+        {% load custom_filters %}
+        <label for="chit_group">Chit Group</label>
+        <select
+          id="chit_group"
+          name="chit_group"
+          onchange="updateSubscribers()"
+        >
+          <option value="">Select Group</option>
+          {% for group in chit_groups %}
+          <option value="{{ group.id }}">{{ group.group_name }}</option>
+          {% endfor %}
+        </select>
+
+        <!-- Subscriber Selection -->
+        <label for="subscriber">Subscriber</label>
+        <select id="subscriber" name="subscriber">
+          <option value="">Select Subscriber</option>
+        </select>
+        <label for="amount">Amount</label>
+        <input type="text" id="amount" name="amount" required />
+
+        <label for="payment_date">Payment Date</label>
+        <input type="date" id="payment_date" name="payment_date" />
+
+        <label for="payment_mode">Payment Mode</label>
+        <select id="payment_mode" name="payment_mode">
+          <option value="Cash">Cash</option>
+          <option value="Cheque">Cheque</option>
+          <option value="Online">Online</option>
+        </select>
+
+        <!-- Additional Fields -->
+        <label for="installment_number">Installment Number</label>
+        <input
+          type="number"
+          id="installment_number"
+          name="installment_number"
+        />
+
+        <label for="installment_month">Installment Month</label>
+        <input type="date" id="installment_month" name="installment_month" />
+
+        <label for="arrears">Arrears</label>
+        <input type="text" id="arrears" name="arrears" />
+
+        <label for="future_dues">Future Dues</label>
+        <input type="text" id="future_dues" name="future_dues" />
+
+        <label for="interest_penalty">Interest/Penalty</label>
+        <input type="text" id="interest_penalty" name="interest_penalty" />
+
+        <label for="other_charges">Other Charges</label>
+        <input type="text" id="other_charges" name="other_charges" />
+
+        <label for="amount_in_words">Amount in Words:</label>
+        <input
+          type="text"
+          name="amount_in_words"
+          value="{{ amount_in_words }}"
+          readonly
+        />
+
+        <label for="cheque_details">Cheque Details</label>
+        <textarea id="cheque_details" name="cheque_details"></textarea>
+
+        <label for="dividend_allowed">Dividend Allowed</label>
+        <input type="text" id="dividend_allowed" name="dividend_allowed" />
+
+        <label for="dividend_forfeited">Dividend Forfeited</label>
+        <input type="text" id="dividend_forfeited" name="dividend_forfeited" />
+
+        <label for="dividend_decided">Dividend Decided</label>
+        <input type="text" id="dividend_decided" name="dividend_decided" />
+
+        <label for="receiving_clerk_name">Receiving Clerk Name</label>
+        <input
+          type="text"
+          id="receiving_clerk_name"
+          name="receiving_clerk_name"
+        />
+
+        <button type="submit">Add Payment</button>
+      </form>
+    </main>
+
+    <script>
+
+      // Function to update the subscribers dropdown based on selected chit group
+      function updateSubscribers() {
+        var chitGroupId = document.getElementById('chit_group').value;
+        var subscribersDropdown = document.getElementById('subscriber');
+
+        // Reset the subscriber dropdown
+        subscribersDropdown.innerHTML = '<option value="">Select Subscriber</option>';
+
+        // Fetch subscribers for the selected ChitGroup
+        {% for group in chit_groups %}
+          if (chitGroupId == "{{ group.id }}") {
+            {% for subscriber in group_subscribers|get_item:group.id %}
+              subscribersDropdown.innerHTML += '<option value="{{ subscriber.id }}">{{ subscriber.name }}</option>';
+            {% endfor %}
+          }
+        {% endfor %}
+      }
+    </script>
+  </body>
+</html>

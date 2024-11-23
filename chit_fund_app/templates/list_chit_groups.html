@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chit Fund Dashboard - List Chit Groups</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        overflow-x: hidden;
+      }
+
+      header {
+        width: 100%;
+        background-color: #0066cc;
+        color: white;
+        padding: 15px 15px;
+        font-size: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 1.2rem;
+      }
+
+      .nav-links a:hover {
+        text-decoration: underline;
+      }
+
+      .center-container {
+        margin-top: 80px; /* To account for the fixed header */
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .add-button {
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #007bff;
+        padding: 10px 20px;
+        font-size: 1.4rem;
+        border-radius: 5px;
+        display: inline-block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .add-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 15px;
+        font-size: 1.4rem;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #0066cc;
+        color: white;
+        text-align: center;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+
+      .actions a,
+      .actions button {
+        margin-right: 10px;
+        font-size: 1.2rem;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .edit-button {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .edit-button:hover {
+        background-color: #0056b3;
+      }
+
+      .delete-button {
+        background-color: #ff4d4d;
+        color: white;
+      }
+
+      .delete-button:hover {
+        background-color: #cc0000;
+      }
+
+      form {
+        display: inline;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>SAS</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="center-container">
+      <h2>Chit Groups</h2>
+      <a href="/chit_groups/add/" class="add-button">Add Chit Group</a>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Group Name</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% load humanize %} {% for group in chit_groups %}
+        <tr>
+          <td>{{ group.group_name }}</td>
+          <td>₹{{ group.total_amount|intcomma }}</td>
+          <td class="actions">
+            <a href="/chit_groups/edit/{{ group.id }}" class="edit-button"
+              >Edit</a
+            >
+            <form action="/chit_groups/delete/{{ group.id }}/" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="delete-button">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
