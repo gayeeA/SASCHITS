@@ -89,6 +89,21 @@ DATABASES = {
     }
 }
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Ensures environment variables are loaded
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('django_saschits'),
+        'USER': os.getenv('django_saschits_user'),
+        'PASSWORD': os.getenv('e1ntthzDO8bR1T4xY1w6nb5dhz0lrNdT'),
+        'HOST': os.getenv('dpg-ctlefjbtq21c73f386c0-a.oregon-postgres.render.com'),
+        'PORT': os.getenv('5432'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
